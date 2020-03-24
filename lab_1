@@ -1,0 +1,86 @@
+// aisd1.cpp: определяет точку входа для консольного приложения.
+//
+
+#include "stdafx.h"
+#include <iostream>
+
+using namespace std;
+
+bool func(int x[5]) {
+	return (!x[1] || x[2] || !x[3]) && (x[2] || !x[3] || x[4]);
+}
+
+double net(int x[5], double w[5]) {
+	double result = 0;
+	for (int i = 0; i < 5; i++) {
+		result += w[i] * x[i];
+	}
+	return result;
+}
+
+int porogFA(double net) {
+	if (net <= 0) return 1;
+	else return 0;
+}
+
+int main()
+{
+	int x[16][5] =
+	{
+		{ 1,0,0,0,0 },
+		{ 1,0,0,0,1 },
+		{ 1,0,0,1,0 },
+		{ 1,0,0,1,1 },
+		{ 1,0,1,0,0 },
+		{ 1,0,1,0,1 },
+		{ 1,0,1,1,0 },
+		{ 1,0,1,1,1 },
+		{ 1,1,0,0,0 },
+		{ 1,1,0,0,1 },
+		{ 1,1,0,1,0 },
+		{ 1,1,0,1,1 },
+		{ 1,1,1,0,0 },
+		{ 1,1,1,0,1 },
+		{ 1,1,1,1,0 },
+		{ 1,1,1,1,1 }
+	};
+
+	double w[5] = { 0,0,0,0,0 }, dw[5] = { 0,0,0,0,0 };
+	int o;
+	int i = 0;
+	double q = 0.3;
+	int sumO = 16;
+	while (sumO != 0) {
+		o = func(x[i]) - porogFA(net(x[i], w));
+		if (o == 0) {
+			i++;
+			sumO--;
+		}
+		else {
+			for (int j = 0; j < 5; j++) {
+				dw[j] = x[i][j] * o * q;
+				w[j] += dw[j];
+			}
+			i++;
+		}
+		if (i == 15) {
+			i = 0;
+			cout << sumO << endl;
+			sumO = 16;
+		}
+		for (int j = 0; j < 5; j++) {
+			cout << x[i][j];
+		}
+		cout << '-';
+		for (int j = 0; j < 5; j++) {
+			cout << w[j];
+		}
+		cout << '\n';
+	}
+
+	cin.get();
+	cin.get();
+	return 0;
+}
+
+
